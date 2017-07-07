@@ -13,10 +13,10 @@
    
    - `python query_20_times.py app`
    
-   根据**AppName**进行的查询，查询20次，每次间隔5mins
+      根据**AppName**进行的查询，查询20次，每次间隔5mins
    
    - `python query_20_times.py apk`
    
-   根据**package_Name**进行的查询，查询20次，每次间隔5mins，这个比较能真实反映爬虫的下载速度
+      根据**package_Name**进行的查询，查询20次，每次间隔5mins，这个比较能真实反映爬虫的下载速度
    
  
