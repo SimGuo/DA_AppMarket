@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import pandas as pd
-import pymysql, json, os, time
+import pymysql, json, os, time, sys
 
 def read_config():
 	result = {}
@@ -28,28 +28,46 @@ config = read_config()
 conn = pymysql.connect(config['MYSQL_HOST'], config['MYSQL_USER'], config['MYSQL_PASSWORD'], config['MYSQL_DB'])
 cursor = conn.cursor()
 
-query_turns = 20
+query_turns = 3
 all_data = dict()
 all_data.update({'marketID':[0]})
 for i in range (1, 26):
 	all_data['marketID'].append(i)
 
-for i in range(1, query_turns):
-	tmp_query = list()
-	print "query for the ", i, "time"
-	for market in range(0, 27):
-		#marketID = 0,1,2,...,26
-		if marketID == 16:
-			continue	#Market 16 doesn't update any more
-		print "marketID : ", market, "................"
-		cursor.execute("select count(*) from market_app_metadata where MarketID = " + str(market) + " group by App_Name")
-		market_app_num = int(cursor.rowcount)
-		tmp_query.append(market_app_num)
-	tmpkey = 'Turn'+str(i)
-	all_data.update({tmpkey:tmp_query})
-	if i != query_turns - 1:
-		print "sleep for five minutes"
-		time.sleep(300) # query every 5 mins
+if sys.argv[1] == 'app':
+	for i in range(1, query_turns):
+		tmp_query = list()
+		print "query for the ", i, "time"
+		for market in range(0, 27):
+			#marketID = 0,1,2,...,26
+			if marketID == 16:
+				continue	#Market 16 doesn't update any more
+			print "marketID : ", market, "................"
+			cursor.execute("select count(*) from market_app_metadata where MarketID = " + str(market) + " group by App_Name")
+			market_app_num = int(cursor.rowcount)
+			tmp_query.append(market_app_num)
+		tmpkey = 'Turn'+str(i)
+		all_data.update({tmpkey:tmp_query})
+		if i != query_turns - 1:
+			print "sleep for five minutes"
+			time.sleep(300) # query every 5 mins
+elif sys.argv[1] == 'apk':
+	for i in range(1, query_turns):
+		tmp_query = list()
+		print "query for the ", i, "time"
+		cursor.execute("select MarketID, TotalApps from toshow_view")
+		tmpdata = cursor.fetchall()
+		for rows in tmpdata:
+			if marketID == 16:
+				continue	#Market 16 doesn't update any more
+			print "marketID : ", market, "................"
+			market_apk_num = rows[1]
+			tmp_query.append(market_apk_num)
+		tmpkey = 'Turn'+str(i)
+		all_data.update({tmpkey:tmp_query})
+		if i != query_turns - 1:
+			print "sleep for five minutes"
+			time.sleep(300) # query every 5 mins	
 
 df = pd.DataFrame(all_data)
 print df
