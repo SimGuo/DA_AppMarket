@@ -58,9 +58,9 @@ elif sys.argv[1] == 'apk':
 		cursor.execute("select MarketID, TotalApps from toshow_view")
 		tmpdata = cursor.fetchall()
 		for rows in tmpdata:
-			if marketID == 16:
+			if rows[0] == 16:
 				continue	#Market 16 doesn't update any more
-			print "marketID : ", market, "................"
+			print "marketID : ", rows[0], "................"
 			market_apk_num = rows[1]
 			tmp_query.append(market_apk_num)
 		tmpkey = 'Turn'+str(i)
