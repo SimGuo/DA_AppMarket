@@ -28,7 +28,7 @@ config = read_config()
 conn = pymysql.connect(config['MYSQL_HOST'], config['MYSQL_USER'], config['MYSQL_PASSWORD'], config['MYSQL_DB'])
 cursor = conn.cursor()
 
-query_turns = 3
+query_turns = 20
 all_data = dict()
 all_data.update({'marketID':[0]})
 for i in range (1, 26):
@@ -47,8 +47,9 @@ for i in range(1, query_turns):
 		tmp_query.append(market_app_num)
 	tmpkey = 'Turn'+str(i)
 	all_data.update({tmpkey:tmp_query})
-	print "sleep for five minutes"
-	time.sleep(300) # query every 5 mins
+	if i != query_turns - 1:
+		print "sleep for five minutes"
+		time.sleep(300) # query every 5 mins
 
 df = pd.DataFrame(all_data)
 print df
