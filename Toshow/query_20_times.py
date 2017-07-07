@@ -31,7 +31,7 @@ cursor = conn.cursor()
 query_turns = 3
 all_data = dict()
 all_data.update({'marketID':[0]})
-for i in range (1, 26):
+for i in range (1, 27):
 	all_data['marketID'].append(i)
 
 if sys.argv[1] == 'app':
