@@ -10,7 +10,8 @@
 - `query_20_times.py`
  
   动图（实时apk?app?下载数目变化)（体现爬虫速度）
-   - `python query_20_times.py app`
+   
+   - `python query_20_times.py app`
    
    根据**AppName**进行的查询，查询20次，每次间隔5mins
    
