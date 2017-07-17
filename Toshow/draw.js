@@ -10,7 +10,7 @@ var bardata = [10, 20, 30, 40, 33, 24, 12, 5, 12,12,23,21,12,29,12,18,27,10,38,1
 function draw_market_bar(dataset, id){
 	//画布大小
 	var width = 1100;
-	var height = 300;
+	var height = 450;
 
 	//在 body 里添加一个 SVG 画布	
 	var svg = d3.select(id)
