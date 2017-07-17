@@ -1,16 +1,13 @@
 //----------------------------颜色定义--------------------------------
-var index = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
-//var color = ["#a76ca4", "#806ca7", "#6c96a7", "#6ca794", "#6ca76c", "#92ba55", "#c9a436", "#c96036"];
 var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8d","#ee8b97","#f3aca2","#f9cdac"
 ,"#f9cdac","#f3aca2","#ee8b97","#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
 "#2d0f41","#3d1459","#4d1a70"];
 //----------------------------柱状图--------------------------------
 
-var bardata = [10, 20, 30, 40, 33, 24, 12, 5, 12,12,23,21,12,29,12,18,27,10,38,12,19,37,29,19,12,29,12];
 function draw_market_bar(dataset, id){
 	//画布大小
 	var width = 1100;
-	var height = 450;
+	var height = 300;
 
 	//在 body 里添加一个 SVG 画布	
 	var svg = d3.select(id)
@@ -19,7 +16,7 @@ function draw_market_bar(dataset, id){
 		.attr("height", height);
 
 	//画布周边的空白
-	var padding = {left:60, right:30, top:20, bottom:20};
+	var padding = {left:30, right:30, top:20, bottom:20};
 	
 		
 	//x轴的比例尺
@@ -45,6 +42,16 @@ function draw_market_bar(dataset, id){
 	//矩形之间的空白
 	var rectPadding = 4;
 
+	//悬停的时候的tip
+	var tip = d3.tip()
+  		.attr('class', 'd3-tip')
+  		.offset([-10, 0])
+  		.html(function(d) {
+    		return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+  	});
+  	svg.call(tip);
+
+
 	//添加矩形元素
 	var rects = svg.selectAll(".MyRect")
 		.data(dataset)
@@ -60,6 +67,7 @@ function draw_market_bar(dataset, id){
 	        	.transition()
 	            .duration(100)
 	            .attr("fill","#ff9b00");
+	        tip.show();
 	    })
 	    .on("mouseout",function(d,i){
 	        d3.select(this)
@@ -68,6 +76,7 @@ function draw_market_bar(dataset, id){
 	            .attr("fill",function(){
 	            	return color[i];
 	            });
+	        tip.hide();
 	    })
 		.attr("x", function(d,i){
 			return xScale(i) + rectPadding/2;
@@ -92,6 +101,7 @@ function draw_market_bar(dataset, id){
 		.attr("height", function(d){
 			return height - padding.top - padding.bottom - yScale(d);
 		});
+
 
 	//添加x轴
 	svg.append("g")
@@ -245,8 +255,8 @@ function generate(data, id) {
           return d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
         }
       }
-generate(piedata1,"#eat-a-pie");
-generate(piedata2,"#eat-two-pie");
+//generate(piedata1,"#eat-a-pie");
+//generate(piedata2,"#eat-two-pie");
 
 //----------------------------折线图--------------------------------
 var data = [
@@ -267,254 +277,233 @@ var hAxis = 10, mAxis = 10;
 
 //generation function
 function generate2(data, id, lineType, axisNum) {
-var margin = {top: 20, right: 18, bottom: 35, left: 28},
-    width = $(id).width() - margin.left - margin.right,
-    height = $(id).height() - margin.top - margin.bottom;
+	var margin = {top: 20, right: 18, bottom: 35, left: 28},
+	    width = $(id).width() - margin.left - margin.right,
+	    height = $(id).height() - margin.top - margin.bottom;
 
-var parseDate = d3.time.format("%H:%M").parse;
+	var parseDate = d3.time.format("%H:%M").parse;
 
-var legendSize = 10,
-    legendColor = {'appnum': "#f8cd61", 'Downloads': "#ffad66"};
+	var legendSize = 10,
+	    legendColor = {'appnum': "#f8cd61", 'Downloads': "#ffad66"};
 
-var x = d3.time.scale()
-    .range([0, width]);
+	var x = d3.time.scale()
+	    .range([0, width]);
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+	var y = d3.scale.linear()
+	    .range([height, 0]);
 
-//data.length/10 is set for the garantte of timeseries's fitting effect in svg chart
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .ticks(d3.time.minutes, Math.floor(data.length / axisNum))
-    .tickSize(-height)
-    .tickPadding([6])
-    .orient("bottom");
+	//data.length/10 is set for the garantte of timeseries's fitting effect in svg chart
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .ticks(d3.time.minutes, Math.floor(data.length / axisNum))
+	    .tickSize(-height)
+	    .tickPadding([6])
+	    .orient("bottom");
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .ticks(10)
-    .tickSize(-width)
-    .orient("left");
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .ticks(10)
+	    .tickSize(-width)
+	    .orient("left");
 
-var ddata = (function() {
-  var temp = {}, seriesArr = [];
+	var ddata = (function() {
+		var temp = {}, seriesArr = [];
 
-  category.forEach(function (name) {
-    temp[name] = {category: name, values:[]};
-    seriesArr.push(temp[name]);
-  });
+		category.forEach(function (name) {
+			temp[name] = {category: name, values:[]};
+			seriesArr.push(temp[name]);
+		});
 
-  data.forEach(function (d) {
-    category.map(function (name) {
-      temp[name].values.push({'category': name, 'time': parseDate(d['time']), 'num': d[name]});
-    });
-  });
+  		data.forEach(function (d) {
+    		category.map(function (name) {
+      			temp[name].values.push({'category': name, 'time': parseDate(d['time']), 'num': d[name]});
+    		});
+  		});
 
-  return seriesArr;
-})();
+  		return seriesArr;
+	})();
 
-// q = ddata;
-// console.log(ddata);
+	// q = ddata;
+	// console.log(ddata);
 
-x.domain( d3.extent(data, function(d) { return parseDate(d['time']); }) );
+	x.domain( d3.extent(data, function(d) { return parseDate(d['time']); }) );
 
-y.domain([
-  0,
-  d3.max(ddata, function(c) { return d3.max(c.values, function(v) { return v['num']; }); })+100
-]);
+	y.domain([
+	  	0,
+	  	d3.max(ddata, function(c) { return d3.max(c.values, function(v) { return v['num']; }); })+100
+	]);
 
-var area = d3.svg.area()
-    .x(function(d) { return x(d['time']); })
-    .y0(height)
-    .y1(function(d) { return y(d['num']); })
-    .interpolate(lineType);
+	var area = d3.svg.area()
+	    .x(function(d) { return x(d['time']); })
+	    .y0(height)
+	    .y1(function(d) { return y(d['num']); })
+	    .interpolate(lineType);
 
-d3.select('#svg-net').remove();
+	d3.select('#svg-net').remove();
 
-var svg = d3.select(id).append("svg")
-    .attr("id", "svg-net")
-    .attr("width", width+margin.right+margin.left)
-    .attr("height", height+margin.top+margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var svg = d3.select(id).append("svg")
+	    .attr("id", "svg-net")
+	    .attr("width", width+margin.right+margin.left)
+	    .attr("height", height+margin.top+margin.bottom)
+	    .append("g")
+	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("id", "net-x-axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+	svg.append("g")
+	    .attr("class", "x axis")
+	    .attr("id", "net-x-axis")
+	    .attr("transform", "translate(0," + height + ")")
+	    .call(xAxis);
 
-svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
+	svg.append("g")
+	    .attr("class", "y axis")
+	    .call(yAxis);
 
-var path = svg.selectAll(".gPath")
-    .data(ddata)
-    .enter().append("g")
-    .attr("class", "gPath");
+	var path = svg.selectAll(".gPath")
+	    .data(ddata)
+	    .enter().append("g")
+	    .attr("class", "gPath");
 
-path.append("path")
-    .attr("d", function(d) { return area(d['values']); })
-    .attr("class", function(d) {
-      if (d['category'] === 'appnum')
-        return 'areaU';
-      else
-        return 'areaD';
-    });
+	path.append("path")
+	    .attr("d", function(d) { return area(d['values']); })
+	    .attr("class", function(d) {
+	      if (d['category'] === 'appnum')
+	        return 'areaU';
+	      else
+	        return 'areaD';
+	    });
 
-var legend = svg.selectAll('.legend')
-    .data(category)
-    .enter()
-    .append('g')
-    .attr('class', 'legend')
-    .attr('transform', function(d, i) {
-      return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
-    });
+	var legend = svg.selectAll('.legend')
+	    .data(category)
+	    .enter()
+	    .append('g')
+	    .attr('class', 'legend')
+	    .attr('transform', function(d, i) {
+	      return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
+	    });
 
-legend.append('rect')
-    .attr('width', legendSize)
-    .attr('height', legendSize)
-    .style('fill', function(d) { return legendColor[d]});
+	legend.append('rect')
+	    .attr('width', legendSize)
+	    .attr('height', legendSize)
+	    .style('fill', function(d) { return legendColor[d]});
 
-legend.append('text')
-    .data(category)
-    .attr('x', legendSize*1.2)
-    .attr('y', legendSize/1.1)
-    .text(function(d) {
-      return d;
-    });
+	legend.append('text')
+	    .data(category)
+	    .attr('x', legendSize*1.2)
+	    .attr('y', legendSize/1.1)
+	    .text(function(d) {
+	      return d;
+	    });
 
-var points = svg.selectAll(".seriesPoints")
-    .data(ddata)
-    .enter().append("g")
-    .attr("class", "seriesPoints");
+	var points = svg.selectAll(".seriesPoints")
+	    .data(ddata)
+	    .enter().append("g")
+	    .attr("class", "seriesPoints");
 
-points.selectAll(".tipNetPoints")
-    .data(function (d) { return d['values']; })
-    .enter().append("circle")
-    .attr("class", "tipNetPoints")
-    .attr("cx", function (d) { return x(d['time']); })
-    .attr("cy", function (d) { return y(d['num']); })
-    .text(function (d) { return d['num']; })
-    .attr("r", "6px")
-    .style("fill",function (d) { return legendColor[d['category']]; })
-    .on("mouseover", function (d) {
-      // console.log();
-      var currentX = $(this)[0]['cx']['animVal']['value'],
-          currentY = $(this)[0]['cy']['animVal']['value'];
+	points.selectAll(".tipNetPoints")
+	    .data(function (d) { return d['values']; })
+	    .enter().append("circle")
+	    .attr("class", "tipNetPoints")
+	    .attr("cx", function (d) { return x(d['time']); })
+	    .attr("cy", function (d) { return y(d['num']); })
+	    .text(function (d) { return d['num']; })
+	    .attr("r", "6px")
+	    .style("fill",function (d) { return legendColor[d['category']]; })
+	    .on("mouseover", function (d) {
+      		var currentX = $(this)[0]['cx']['animVal']['value'],
+          		currentY = $(this)[0]['cy']['animVal']['value'];
 
-      d3.select(this).transition().duration(100).style("opacity", 1);
+      		d3.select(this).transition().duration(100).style("opacity", 1);
 
-      var ret = $('.tipNetPoints').filter(function(index) {
-        return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
-      });
 
-      //to adjust tooltip'x content if appnum and Downloads data are the same
-      var jud = ret.length;
+      		//判断现在鼠标悬停在哪里
+      		var ret = $('.tipNetPoints').filter(function(index) {
+        		return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
+      		});
 
-      // console.log(ret.length);
+      		//to adjust tooltip'x content if appnum and Downloads data are the same
+      		var jud = ret.length;
 
-      var mainCate = (function() {
-        if (jud === 0)
-          return 'appnum/Downloads';
-        else
-          return d['category'];
-      })();
+      		// console.log(ret.length);
+      		var mainCate = (function() {
+        		if (jud === 0)
+          			return 'appnum/Downloads';
+        		else
+          			return d['category'];
+      		})();
 
-      var viceCate = (function() {
-        if (category[0] === d['category'])
-          return category[1];
-        else
-          return category[0];
-      })();
+      		var viceCate = (function() {
+        		if (category[0] === d['category'])
+          			return category[1];
+        		else
+          			return category[0];
+      		})();
 
-      $.each(ret, function(index, val) {
-        // console.log(mainCate + ' | ' + viceCate);
+      		$.each(ret, function(index, val) {
+        		// console.log(mainCate + ' | ' + viceCate);
 
-        $(val).animate({
-          opacity: "1"
-        }, 100);
+		        $(val).animate({
+		          	opacity: "1"
+		        }, 100);
 
-        $(val).tooltip({
-          'container': 'body',
-          'placement': 'left',
-          'title': viceCate + ' | ' + $(this)[0]['textContent'],
-          'trigger': 'hover'
-        })
-            .tooltip('show');
-      });
+        		$(val).tooltip({
+	          		'container': 'body',
+	          		'placement': 'left',
+	          		'title': viceCate + ' | ' + $(this)[0]['textContent'],
+	          		'trigger': 'hover'
+	        	})
+            	.tooltip('show');
+      		});
 
-      svg.append("g")
-        .attr("class", "tipDot")
-        .append("line")
-        .attr("class", "tipDot")
-        .transition()
-        .duration(50)
-        .attr("x1", $(this)[0]['cx']['animVal']['value'])
-        .attr("x2", $(this)[0]['cx']['animVal']['value'])
-        .attr("y2", height);
+      		svg.append("g")
+		        .attr("class", "tipDot")
+		        .append("line")
+		        .attr("class", "tipDot")
+		        .transition()
+		        .duration(50)
+		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
+		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
+		        .attr("y2", height);
 
-      svg.append("polyline")
-        .attr("class", "tipDot")
-        .style("fill", "black")
-        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
+		    //画线的端点，两个黑色的三角形端点
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
 
-      svg.append("polyline")
-        .attr("class", "tipDot")
-        .style("fill", "black")
-        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
 
-      $(this).tooltip({
-        'container': 'body',
-        'placement': 'left',
-        'title': mainCate + ' | ' + d['num'],
-        'trigger': 'hover'
-      })
-      .tooltip('show');
-    })
-    .on("mouseout",  function (d) {
-      var currentX = $(this)[0]['cx']['animVal']['value'];
+      		$(this).tooltip({
+		        'container': 'body',
+		        'placement': 'left',
+		        'title': mainCate + ' | ' + d['num'],
+		        'trigger': 'hover'
+      		})
+      		.tooltip('show');
+    	})
+    	.on("mouseout",  function (d) {
+      		var currentX = $(this)[0]['cx']['animVal']['value'];
 
-      d3.select(this).transition().duration(100).style("opacity", 0);
+      		d3.select(this).transition().duration(100).style("opacity", 0);
 
-      var ret = $('.tipNetPoints').filter(function(index) {
-        return ($(this)[0]['cx']['animVal']['value'] === currentX);
-      });
+      		var ret = $('.tipNetPoints').filter(function(index) {
+        		return ($(this)[0]['cx']['animVal']['value'] === currentX);
+      		});
 
-      $.each(ret, function(index, val) {
-        $(val).animate({
-          opacity: "0"
-        }, 100);
+      		$.each(ret, function(index, val) {
+        		$(val).animate({
+          			opacity: "0"
+        		}, 100);
 
-        $(val).tooltip('destroy');
-      });
+        		$(val).tooltip('destroy');
+      		});
 
-      d3.selectAll('.tipDot').transition().duration(100).remove();
+      		d3.selectAll('.tipDot').transition().duration(100).remove();
 
-      $(this).tooltip('destroy');
-    });
-
-this.getOpt = function() {
-  var axisOpt = new Object();
-  axisOpt['x'] = x;
-  axisOpt['y'] = y;
-  axisOpt['xAxis'] = xAxis;
-  axisOpt['width'] = width;
-  axisOpt['height'] = height;
-
-  return axisOpt;
-}
-
-this.getSvg = function() {
-  var svgD = new Object();
-  svgD['svg'] = svg;
-  svgD['points'] = points;
-  svgD['area'] = area;
-  svgD['path'] = path;
-  svgD['legendColor'] = legendColor;
-
-  return svgD;
-}
+      		$(this).tooltip('destroy');
+    	});
 }
 
 generate2(data, "#zhexian-d3");
