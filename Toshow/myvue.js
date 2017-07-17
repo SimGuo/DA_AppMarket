@@ -1,27 +1,3 @@
-
-//var num1 = 1875144;
-window.num1;
-window.num2;
-
-var socket = io('http://localhost:8080');
-// 自定义一个'news'事件
-socket.on('news', function (data) {
-	window.num1 = data['TotalApps'];
-        window.num2 = data['TotalApks'];
-	console.log(window.num1);
-	console.log(data);
-	// 发送事件到服务端
-	socket.emit('my other event', { my: 'return from client' });
-});
-
-var app = new Vue({
-	el: '#charts',
-	data:{
-		app_num: window.num1,
-		apk_num: window.num2
-	},
-});
-
 //----------------------------颜色定义--------------------------------
 var index = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
 var color = ["#a76ca4", "#806ca7", "#6c96a7", "#6ca794", "#6ca76c", "#92ba55", "#c9a436", "#c96036"];
