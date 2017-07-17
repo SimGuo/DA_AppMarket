@@ -105,7 +105,7 @@ function draw_market_bar(dataset, id){
 		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
 		.call(yAxis);
 }
-draw_market_bar(bardata,"#test-d3");
+//draw_market_bar(bardata,"#test-d3");
 
 //----------------------------饼 图--------------------------------
 var piedata1 = [
