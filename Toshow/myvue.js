@@ -1,10 +1,11 @@
 
 var num1 = 1875144 ;
-
+var num2 = 2718952;
 var app = new Vue({
 	el: '#charts',
 	data:{
-		app_num: num1
+		app_num: num1,
+		apk_num: num2
 	},
 });
 
