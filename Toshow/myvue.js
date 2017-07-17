@@ -1,7 +1,7 @@
 
-    //var num1 = 1875144;
-var num1;
-var num2;
+//var num1 = 1875144;
+window.num1;
+window.num2;
 
 var socket = io('http://localhost:8080');
 // 自定义一个'news'事件
@@ -17,8 +17,8 @@ socket.on('news', function (data) {
 var app = new Vue({
 	el: '#charts',
 	data:{
-		app_num: num1,
-		apk_num: num2
+		app_num: window.num1,
+		apk_num: window.num2
 	},
 });
 
