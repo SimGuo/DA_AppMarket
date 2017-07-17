@@ -1,18 +1,9 @@
 //----------------------------颜色定义--------------------------------
 var index = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
-var color = ["#a76ca4", "#806ca7", "#6c96a7", "#6ca794", "#6ca76c", "#92ba55", "#c9a436", "#c96036"];
-var color = ["#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
-"#2d0f41","#3d1459","#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8d","#ee8b97","#f3aca2","#f9cdac"
-,"#f9cdac","#f3aca2","#ee8b97"];
-var ordina1 = d3.scale.ordinal()
-		.domain(index)
-		.range(color);
-
-var index2 = [0, 1, 2, 3, 4, 5, 6, 7, 8];
-var ordina2 = d3.scale.ordinal()
-		.domain(index2)
-		.range(color);
-
+//var color = ["#a76ca4", "#806ca7", "#6c96a7", "#6ca794", "#6ca76c", "#92ba55", "#c9a436", "#c96036"];
+var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8d","#ee8b97","#f3aca2","#f9cdac"
+,"#f9cdac","#f3aca2","#ee8b97","#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
+"#2d0f41","#3d1459"];
 //----------------------------柱状图--------------------------------
 
 var bardata = [10, 20, 30, 40, 33, 24, 12, 5, 12,12,23,21,12,29,12,18,27,10,38,12,19,37,29,19,12,29,12];
@@ -61,7 +52,9 @@ function draw_market_bar(dataset, id){
 		.append("rect")
 		.attr("class","MyRect")
 		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
-		.attr("fill", ordina1)
+		.attr("fill", function(d,i){
+			return color[i];
+		})
 		.on("mouseover",function(d,i){
 	        d3.select(this)
 	        	.transition()
@@ -72,7 +65,9 @@ function draw_market_bar(dataset, id){
 	        d3.select(this)
 	            .transition()
 	            .duration(500)
-	            .attr("fill",ordina1);
+	            .attr("fill",function(){
+	            	return color[i];
+	            });
 	    })
 		.attr("x", function(d,i){
 			return xScale(i) + rectPadding/2;
