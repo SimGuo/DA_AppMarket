@@ -2,7 +2,7 @@ var app = new Vue({
 	el: '#charts',
 	data:{
 		app_num: window.num1,
-		apk_num: num2
+		apk_num: window.num2
 	},
 });
 
