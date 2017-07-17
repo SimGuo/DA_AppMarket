@@ -1,3 +1,19 @@
+
+    //var num1 = 1875144;
+var num1;
+var num2;
+
+var socket = io('http://localhost:8080');
+// 自定义一个'news'事件
+socket.on('news', function (data) {
+	window.num1 = data['TotalApps'];
+        window.num2 = data['TotalApks'];
+	console.log(window.num1);
+	console.log(data);
+	// 发送事件到服务端
+	socket.emit('my other event', { my: 'return from client' });
+});
+
 var app = new Vue({
 	el: '#charts',
 	data:{
