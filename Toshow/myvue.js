@@ -1,6 +1,3 @@
-
-var num1 = 1875144 ;
-var num2 = 2718952;
 var app = new Vue({
 	el: '#charts',
 	data:{
