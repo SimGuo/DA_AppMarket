@@ -19,7 +19,7 @@ function draw_market_bar(dataset, id){
 		.attr("height", height);
 
 	//画布周边的空白
-	var padding = {left:50, right:30, top:20, bottom:20};
+	var padding = {left:60, right:30, top:20, bottom:20};
 	
 		
 	//x轴的比例尺
