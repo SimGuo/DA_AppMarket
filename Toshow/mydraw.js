@@ -262,7 +262,21 @@ function generate(data, id) {
 //generate(piedata2,"#eat-two-pie");
 
 //----------------------------折线图--------------------------------
+var data = [
+        {time: '10:01', appnum: 200, Downloads: 500, total: 1000},
+        {time: '10:02', appnum: 620, Downloads: 600, total: 1000},
+        {time: '10:03', appnum: 300, Downloads: 800, total: 1000},
+        {time: '10:04', appnum: 440, Downloads: 700, total: 1000},
+        {time: '10:05', appnum: 900, Downloads: 900, total: 1000},
+        {time: '10:06', appnum: 300, Downloads: 500, total: 1000},
+        {time: '10:07', appnum: 50, Downloads: 300, total: 1000},
+        {time: '10:08', appnum: 350, Downloads: 70, total: 1000},
+        {time: '10:09', appnum: 750, Downloads: 200, total: 1000}
+      ];
 
+var hAxis = 10, mAxis = 10;
+
+//generation function
 function generate2(data, id, lineType, axisNum) {
 
 	//设置周围留白和svg图像大小
@@ -274,12 +288,12 @@ function generate2(data, id, lineType, axisNum) {
 
 	//设置纵坐标划分为时段
 	var legendSize = 10,
-	    legendColor = {'Apknum': "#f8cd61", 'Downloads': "#ffad66"};
+	    legendColor = {'appnum': "#f8cd61", 'Downloads': "#ffad66"};
 
 	//设置图标中的折线代表的含义
-	var category = ['Apknum', 'Downloads'];
+	var category = ['appnum', 'Downloads'];
 
-	//ddate是将原先的数据按数据类型分组，分为Apknum和Downloads两组数据，得到以Apknum和Downloads为下标的数组，
+	//ddate是将原先的数据按数据类型分组，分为appnum和Downloads两组数据，得到以Appnum和Downloads为下标的数组，
 	//数组中每个元素由category和相应的数据数组构成
 	//子数组中每个元素是由category,对应的 x值和对应的 y值构成
 	var ddata = (function() {
@@ -360,11 +374,11 @@ function generate2(data, id, lineType, axisNum) {
 	    .enter().append("g")
 	    .attr("class", "gPath");
 
-	//对于现在的这张图来说, 有两个path，每个path分别对应Apknum和dowdload的数据, 设置path的class为对应类别
+	//对于现在的这张图来说, 有两个path，每个path分别对应appnum和dowdload的数据, 设置path的class为对应类别
 	path.append("path")
 	    .attr("d", function(d) { return area(d['values']); })
 	    .attr("class", function(d) {
-	      if (d['category'] === 'Apknum')
+	      if (d['category'] === 'appnum')
 	        return 'areaU';
 	      else
 	        return 'areaD';
@@ -442,7 +456,7 @@ function generate2(data, id, lineType, axisNum) {
       		// 返回现在悬停的点代表的值的含义
       		var mainCate = (function() {
         		if (jud === 0)
-          			return 'Apknum/Downloads';
+          			return 'appnum/Downloads';
         		else{
           			return d['category'];
         		}
