@@ -121,27 +121,11 @@ function draw_market_bar(dataset, id){
 //draw_market_bar(bardata,"#test-d3");
 
 //----------------------------饼 图--------------------------------
-var piedata1 = [
-		{ inits : '13', value : 3630669},
-        { inits : '6' , value : 3095021},
-        { inits : '11', value : 1413875},
-        { inits : '12', value : 1372136},
-        { inits : '5' , value : 1304635},
-        { inits : '23', value : 803984 }
-      ];
-var piedata2 = [
-		{ inits : '11', value : 8476648794900},
-		{ inits : '3' , value : 2146652260880},
-		{ inits : '5' , value : 1795042648152},
-		{ inits :'0/1', value : 850282226820},
-		{ inits : '9' , value : 586799570600},
-		{ inits : '2' , value : 348268891196}
-      ];
 
 var category = ['A', 'B', 'C', 'D', 'E', 'F'];
 var cateColor = ["#fdeb73","#f6c15b","#ed9445","#e66731","#b84a29","#6a3a2d"];
 
-function generate(data, id) {
+function draw_market_pie(data, id) {
     var margin = {top: 20, right: 0, bottom: 40, left: 0},
         width = $(id).width() - margin.left - margin.right,
         height = $(id).height() - margin.top - margin.bottom;
@@ -258,42 +242,25 @@ function generate(data, id) {
           return d3.svg.arc().innerRadius(innerRadius).outerRadius(outerRadius);
         }
       }
-//generate(piedata1,"#eat-a-pie");
-//generate(piedata2,"#eat-two-pie");
 
 //----------------------------折线图--------------------------------
-var data = [
-        {time: '10:01', Apknum: 200, Downloads: 500, total: 1000},
-        {time: '10:02', Apknum: 620, Downloads: 600, total: 1000},
-        {time: '10:03', Apknum: 300, Downloads: 800, total: 1000},
-        {time: '10:04', Apknum: 440, Downloads: 700, total: 1000},
-        {time: '10:05', Apknum: 900, Downloads: 900, total: 1000},
-        {time: '10:06', Apknum: 300, Downloads: 500, total: 1000},
-        {time: '10:07', Apknum: 50, Downloads: 300, total: 1000},
-        {time: '10:08', Apknum: 350, Downloads: 70, total: 1000},
-        {time: '10:09', Apknum: 750, Downloads: 200, total: 1000}
-      ];
-
-var hAxis = 10, mAxis = 10;
-
-//generation function
-function generate2(data, id, lineType, axisNum) {
-
+function draw_line_chart(data, id, lineType, axisNum) {
+	
 	//设置周围留白和svg图像大小
 	var margin = {top: 20, right: 18, bottom: 35, left: 30},
 	    width = $(id).width() - margin.left - margin.right,
 	    height = $(id).height() - margin.top - margin.bottom;
 
-	var parseDate = d3.time.format("%H:%M").parse;
+	var parseDate = d3.time.format("%m/%d").parse;
 
 	//设置纵坐标划分为时段
 	var legendSize = 10,
-	    legendColor = {'Apknum': "#f8cd61", 'Downloads': "#ffad66"};
+	    legendColor = {'Apknum': "#f8cd61", 'Appnum': "#ffad66"};
 
 	//设置图标中的折线代表的含义
-	var category = ['Apknum', 'Downloads'];
+	var category = ['Apknum', 'Appnum'];
 
-	//ddate是将原先的数据按数据类型分组，分为Apknum和Downloads两组数据，得到以Apknum和Downloads为下标的数组，
+	//ddate是将原先的数据按数据类型分组，分为Apknum和Appnum两组数据，得到以Apknum和Appnum为下标的数组，
 	//数组中每个元素由category和相应的数据数组构成
 	//子数组中每个元素是由category,对应的 x值和对应的 y值构成
 	var ddata = (function() {
@@ -327,7 +294,7 @@ function generate2(data, id, lineType, axisNum) {
 
 	//area是d3.js中可以将部分区域涂色的函数，这里就是指对每个点，从x轴涂色到对应的 y值处。
 	var area = d3.svg.area()
-	    .x(function(d) { return x(d['time']); })
+	    .x(function(d,i) { return x(d['time']); })
 	    .y0(height)
 	    .y1(function(d) { return y(d['num']); })
 	    .interpolate(lineType);
@@ -347,8 +314,9 @@ function generate2(data, id, lineType, axisNum) {
 	//x轴坐标轴
 	var xAxis = d3.svg.axis()
 	    .scale(x)
-	    .ticks(d3.time.minutes, Math.floor(data.length / axisNum))
+	    .ticks(d3.time.days, Math.floor(data.length / axisNum))
 	    .tickSize(-height)
+	    .tickFormat(d3.time.format("%m/%d"))
 	    .tickPadding([6])
 	    .orient("bottom");
 	//y轴坐标轴
@@ -456,7 +424,7 @@ function generate2(data, id, lineType, axisNum) {
       		// 返回现在悬停的点代表的值的含义
       		var mainCate = (function() {
         		if (jud === 0)
-          			return 'Apknum/Downloads';
+          			return 'Apknum/Appnum';
         		else{
           			return d['category'];
         		}
@@ -515,5 +483,3 @@ function generate2(data, id, lineType, axisNum) {
       		tip.hide();
     	});
 }
-
-generate2(data, "#zhexian-d3");
