@@ -440,7 +440,6 @@ function generate2(data, id, lineType, axisNum) {
 	    .style("fill",function (d) { return legendColor[d['category']]; }) //圆的填充颜色
 	    .on("mouseover", function (d) {
 	    	//animVal属性是定位工具，返回当前的像素位置
-
       		var currentX = $(this)[0]['cx']['animVal']['value'],
           		currentY = $(this)[0]['cy']['animVal']['value'];
           	console.log(currentX);
@@ -452,13 +451,12 @@ function generate2(data, id, lineType, axisNum) {
 
       		//对折线图中的所有的点判断当前鼠标悬停的点重合的点有几个（以判断是否出现两条线重合的情况）
       		var ret = $('.tipNetPoints').filter(function(index) {
-      			//console.log($(this)[0]['cx']['animVal']['value']);
-      			//console.log($(this)[0]['cy']['animVal']['value']);
         		return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
       		});
 
       		// jud = 0 , 1, 2; jud = 0时说明两个点重合，否则直接根据 tipPoint里面 d种category的值，可以知道maincategory
       		var jud = ret.length;
+
       		// 返回现在悬停的点代表的值的含义
       		var mainCate = (function() {
         		if (jud === 0)
@@ -468,33 +466,19 @@ function generate2(data, id, lineType, axisNum) {
         		}
       		})();
       		// 两个值中的另外一个值
+      		console.log(d);
       		var viceCate = (function() {
         		if (category[0] === d['category'])
           			return category[1];
         		else
           			return category[0];
       		})();
-
-      		$.each(ret, function(index, val) {
-		  		
-      			//对于每个点，index是其下标, val是对应的tipNetPoint的值
-        		//圆形显色
-		        $(val).animate({
-		          	opacity: "1"
-		        }, 100);
-
-		        $(val).tooltip('show');
-
-		        
-		        //显示说明文字。
-				tip.html(function() {
-		    		return viceCate + ": <span style='color:white'>" + $(val)[0]['textContent'] + "</span>";
+      		tip.html(function() {
+		    		return mainCate + ": <span style='color:white'>" + d['num'] + "</span>";
 		  		});
 		  		tip.show();
-            	
 
-      		});
-
+		  	//表明横坐标位置的黑线
       		svg.append("g")
 		        .attr("class", "tipDot")
 		        .append("line")
@@ -504,18 +488,15 @@ function generate2(data, id, lineType, axisNum) {
 		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
 		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
 		        .attr("y2", height);
-
 		    //画线的端点，两个黑色的三角形端点
       		svg.append("polyline")
 		        .attr("class", "tipDot")
 		        .style("fill", "black")
 		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
-
       		svg.append("polyline")
 		        .attr("class", "tipDot")
 		        .style("fill", "black")
 		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
-
     	})
     	.on("mouseout",  function (d) {
       		var currentX = $(this)[0]['cx']['animVal']['value'];
@@ -531,14 +512,12 @@ function generate2(data, id, lineType, axisNum) {
           			opacity: "0"
         		}, 100);
 
-        		$(val).tooltip('destroy');
       		});
 
       		d3.selectAll('.tipDot').transition().duration(100).remove();
 
       		tip.hide();
-
     	});
 }
 
-generate2(data, "#zhexian-d3");
+generate2(data, "#zhexian-d3");	
