@@ -262,17 +262,6 @@ function generate(data, id) {
 //generate(piedata2,"#eat-two-pie");
 
 //----------------------------折线图--------------------------------
-var data = [
-        {time: '10:01', appnum: 200, Downloads: 500, total: 1000},
-        {time: '10:02', appnum: 620, Downloads: 600, total: 1000},
-        {time: '10:03', appnum: 300, Downloads: 800, total: 1000},
-        {time: '10:04', appnum: 440, Downloads: 700, total: 1000},
-        {time: '10:05', appnum: 900, Downloads: 900, total: 1000},
-        {time: '10:06', appnum: 300, Downloads: 500, total: 1000},
-        {time: '10:07', appnum: 50, Downloads: 300, total: 1000},
-        {time: '10:08', appnum: 350, Downloads: 70, total: 1000},
-        {time: '10:09', appnum: 750, Downloads: 200, total: 1000}
-      ];
 
 var hAxis = 10, mAxis = 10;
 
