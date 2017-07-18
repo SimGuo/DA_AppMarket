@@ -4,6 +4,8 @@ var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8
 "#2d0f41","#3d1459","#4d1a70"];
 //----------------------------柱状图--------------------------------
 
+//var bardata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28];
+
 function draw_market_bar(dataset, id){
 	//画布大小
 	var width = 1100;
@@ -42,15 +44,10 @@ function draw_market_bar(dataset, id){
 	//矩形之间的空白
 	var rectPadding = 4;
 
-	//悬停的时候的tip
 	var tip = d3.tip()
-  		.attr('class', 'd3-tip')
-  		.offset([-10, 0])
-  		.html(function(d) {
-    		return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-  	});
-  	svg.call(tip);
-
+		  		.attr('class', 'd3-tip')
+		  		.offset([-10, 0])
+	svg.call(tip);
 
 	//添加矩形元素
 	var rects = svg.selectAll(".MyRect")
@@ -67,7 +64,12 @@ function draw_market_bar(dataset, id){
 	        	.transition()
 	            .duration(100)
 	            .attr("fill","#ff9b00");
-	        tip.show();
+	            //悬停的时候的tip
+			
+		  	tip.html(function() {
+		    		return "Apknum: <span style='color:white'>" + dataset[i] + "</span>";
+		  		});
+		  	tip.show();
 	    })
 	    .on("mouseout",function(d,i){
 	        d3.select(this)
@@ -77,6 +79,7 @@ function draw_market_bar(dataset, id){
 	            	return color[i];
 	            });
 	        tip.hide();
+
 	    })
 		.attr("x", function(d,i){
 			return xScale(i) + rectPadding/2;
@@ -271,41 +274,30 @@ var data = [
         {time: '10:09', appnum: 750, Downloads: 200, total: 1000}
       ];
 
-var category = ['appnum', 'Downloads'];
+
 
 var hAxis = 10, mAxis = 10;
 
 //generation function
 function generate2(data, id, lineType, axisNum) {
-	var margin = {top: 20, right: 18, bottom: 35, left: 28},
+
+	//设置周围留白和svg图像大小
+	var margin = {top: 20, right: 18, bottom: 35, left: 30},
 	    width = $(id).width() - margin.left - margin.right,
 	    height = $(id).height() - margin.top - margin.bottom;
 
 	var parseDate = d3.time.format("%H:%M").parse;
 
+	//设置纵坐标划分为时段
 	var legendSize = 10,
 	    legendColor = {'appnum': "#f8cd61", 'Downloads': "#ffad66"};
 
-	var x = d3.time.scale()
-	    .range([0, width]);
+	//设置图标中的折线代表的含义
+	var category = ['appnum', 'Downloads'];
 
-	var y = d3.scale.linear()
-	    .range([height, 0]);
-
-	//data.length/10 is set for the garantte of timeseries's fitting effect in svg chart
-	var xAxis = d3.svg.axis()
-	    .scale(x)
-	    .ticks(d3.time.minutes, Math.floor(data.length / axisNum))
-	    .tickSize(-height)
-	    .tickPadding([6])
-	    .orient("bottom");
-
-	var yAxis = d3.svg.axis()
-	    .scale(y)
-	    .ticks(10)
-	    .tickSize(-width)
-	    .orient("left");
-
+	//ddate是将原先的数据按数据类型分组，分为appnum和Downloads两组数据，得到以Appnum和Downloads为下标的数组，
+	//数组中每个元素由category和相应的数据数组构成
+	//子数组中每个元素是由category,对应的 x值和对应的 y值构成
 	var ddata = (function() {
 		var temp = {}, seriesArr = [];
 
@@ -322,17 +314,20 @@ function generate2(data, id, lineType, axisNum) {
 
   		return seriesArr;
 	})();
+	//将 x方向的时间投影到宽度像素值上, x方向坐标尺
+	var x = d3.time.scale()
+	    .range([0, width])
+		.domain( d3.extent(data, function(d) { return parseDate(d['time']); }) );
 
-	// q = ddata;
-	// console.log(ddata);
+	//将 y方向的时间投影到高度像素值上, y方向坐标尺
+	var y = d3.scale.linear()
+	    .range([height, 0])
+	    .domain([
+		  	0,
+		  	d3.max(ddata, function(c) { return d3.max(c.values, function(v) { return v['num']; }); })+100
+	  	]);
 
-	x.domain( d3.extent(data, function(d) { return parseDate(d['time']); }) );
-
-	y.domain([
-	  	0,
-	  	d3.max(ddata, function(c) { return d3.max(c.values, function(v) { return v['num']; }); })+100
-	]);
-
+	//area是d3.js中可以将部分区域涂色的函数，这里就是指对每个点，从x轴涂色到对应的 y值处。
 	var area = d3.svg.area()
 	    .x(function(d) { return x(d['time']); })
 	    .y0(height)
@@ -341,6 +336,9 @@ function generate2(data, id, lineType, axisNum) {
 
 	d3.select('#svg-net').remove();
 
+
+	//在html的 id对应区域增加svg图像, svg的id设置为svg-net，transfrom是将图形位移
+	//这边需要按照原先设定的留白，将svg移动margin.left和margin.top
 	var svg = d3.select(id).append("svg")
 	    .attr("id", "svg-net")
 	    .attr("width", width+margin.right+margin.left)
@@ -348,21 +346,38 @@ function generate2(data, id, lineType, axisNum) {
 	    .append("g")
 	    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+	//x轴坐标轴
+	var xAxis = d3.svg.axis()
+	    .scale(x)
+	    .ticks(d3.time.minutes, Math.floor(data.length / axisNum))
+	    .tickSize(-height)
+	    .tickPadding([6])
+	    .orient("bottom");
+	//y轴坐标轴
+	var yAxis = d3.svg.axis()
+	    .scale(y)
+	    .ticks(10)
+	    .tickSize(-width)
+	    .orient("left");
+	//画上x轴
 	svg.append("g")
 	    .attr("class", "x axis")
 	    .attr("id", "net-x-axis")
 	    .attr("transform", "translate(0," + height + ")")
 	    .call(xAxis);
-
+	//画上y轴
 	svg.append("g")
 	    .attr("class", "y axis")
 	    .call(yAxis);
 
+
+	//为ddate中的每个元素添加 path的组，class = gpath, 每个组对应一个元素
 	var path = svg.selectAll(".gPath")
 	    .data(ddata)
 	    .enter().append("g")
 	    .attr("class", "gPath");
 
+	//对于现在的这张图来说, 有两个path，每个path分别对应appnum和dowdload的数据, 设置path的class为对应类别
 	path.append("path")
 	    .attr("d", function(d) { return area(d['values']); })
 	    .attr("class", function(d) {
@@ -372,6 +387,8 @@ function generate2(data, id, lineType, axisNum) {
 	        return 'areaD';
 	    });
 
+
+	// legend表示图例，为每个category创建一个图例
 	var legend = svg.selectAll('.legend')
 	    .data(category)
 	    .enter()
@@ -380,12 +397,12 @@ function generate2(data, id, lineType, axisNum) {
 	    .attr('transform', function(d, i) {
 	      return 'translate(' + (i * 10 * legendSize) + ',' + (height + margin.bottom - legendSize * 1.2) + ')';
 	    });
-
+	//图例的小方框
 	legend.append('rect')
 	    .attr('width', legendSize)
 	    .attr('height', legendSize)
 	    .style('fill', function(d) { return legendColor[d]});
-
+	//图例的说明文字
 	legend.append('text')
 	    .data(category)
 	    .attr('x', legendSize*1.2)
@@ -394,43 +411,63 @@ function generate2(data, id, lineType, axisNum) {
 	      return d;
 	    });
 
+	// 实现图片的交互性质，points和path差不多，将ddata中数据按类别分成两组
 	var points = svg.selectAll(".seriesPoints")
 	    .data(ddata)
 	    .enter().append("g")
 	    .attr("class", "seriesPoints");
 
+	var tip = d3.tip()
+		  		.attr('class', 'd3-tip2')
+		  		.offset([0, -70])
+	points.call(tip);
+
+	// 将seriesPoints中的values, 提取出成为tipNetPoints，每个tipNetPoint与类中的一个值绑定
+	//       .enter().append("circle")
+	//       .attr("class", "tipNetPoints")
+	// 的意义是tipNetPoints的每个point是一个圆，但把类名改成了tipNetPoints.  cx, cy 是圆心坐标
 	points.selectAll(".tipNetPoints")
 	    .data(function (d) { return d['values']; })
 	    .enter().append("circle")
 	    .attr("class", "tipNetPoints")
 	    .attr("cx", function (d) { return x(d['time']); })
 	    .attr("cy", function (d) { return y(d['num']); })
+	    .attr("data-toggle","tooltip")
+	    .attr("data-placement","left")
+	    .attr("title","Tooltip on top")
 	    .text(function (d) { return d['num']; })
-	    .attr("r", "6px")
-	    .style("fill",function (d) { return legendColor[d['category']]; })
+	    .attr("r", "6px") //圆的大小
+	    .style("fill",function (d) { return legendColor[d['category']]; }) //圆的填充颜色
 	    .on("mouseover", function (d) {
+	    	//animVal属性是定位工具，返回当前的像素位置
+
       		var currentX = $(this)[0]['cx']['animVal']['value'],
           		currentY = $(this)[0]['cy']['animVal']['value'];
+          	console.log(currentX);
+          	console.log(currentY);
 
+          	//鼠标悬停是，显示圆圈
       		d3.select(this).transition().duration(100).style("opacity", 1);
 
 
-      		//判断现在鼠标悬停在哪里
+      		//对折线图中的所有的点判断当前鼠标悬停的点重合的点有几个（以判断是否出现两条线重合的情况）
       		var ret = $('.tipNetPoints').filter(function(index) {
+      			//console.log($(this)[0]['cx']['animVal']['value']);
+      			//console.log($(this)[0]['cy']['animVal']['value']);
         		return ($(this)[0]['cx']['animVal']['value'] === currentX && $(this)[0]['cy']['animVal']['value'] !== currentY);
       		});
 
-      		//to adjust tooltip'x content if appnum and Downloads data are the same
+      		// jud = 0 , 1, 2; jud = 0时说明两个点重合，否则直接根据 tipPoint里面 d种category的值，可以知道maincategory
       		var jud = ret.length;
-
-      		// console.log(ret.length);
+      		// 返回现在悬停的点代表的值的含义
       		var mainCate = (function() {
         		if (jud === 0)
           			return 'appnum/Downloads';
-        		else
+        		else{
           			return d['category'];
+        		}
       		})();
-
+      		// 两个值中的另外一个值
       		var viceCate = (function() {
         		if (category[0] === d['category'])
           			return category[1];
@@ -439,19 +476,23 @@ function generate2(data, id, lineType, axisNum) {
       		})();
 
       		$.each(ret, function(index, val) {
-        		// console.log(mainCate + ' | ' + viceCate);
-
+		  		
+      			//对于每个点，index是其下标, val是对应的tipNetPoint的值
+        		//圆形显色
 		        $(val).animate({
 		          	opacity: "1"
 		        }, 100);
 
-        		$(val).tooltip({
-	          		'container': 'body',
-	          		'placement': 'left',
-	          		'title': viceCate + ' | ' + $(this)[0]['textContent'],
-	          		'trigger': 'hover'
-	        	})
-            	.tooltip('show');
+		        $(val).tooltip('show');
+
+		        
+		        //显示说明文字。
+				tip.html(function() {
+		    		return viceCate + ": <span style='color:white'>" + $(val)[0]['textContent'] + "</span>";
+		  		});
+		  		tip.show();
+            	
+
       		});
 
       		svg.append("g")
@@ -475,13 +516,6 @@ function generate2(data, id, lineType, axisNum) {
 		        .style("fill", "black")
 		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
 
-      		$(this).tooltip({
-		        'container': 'body',
-		        'placement': 'left',
-		        'title': mainCate + ' | ' + d['num'],
-		        'trigger': 'hover'
-      		})
-      		.tooltip('show');
     	})
     	.on("mouseout",  function (d) {
       		var currentX = $(this)[0]['cx']['animVal']['value'];
@@ -502,7 +536,8 @@ function generate2(data, id, lineType, axisNum) {
 
       		d3.selectAll('.tipDot').transition().duration(100).remove();
 
-      		$(this).tooltip('destroy');
+      		tip.hide();
+
     	});
 }
 
