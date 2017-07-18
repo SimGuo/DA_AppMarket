@@ -444,8 +444,28 @@ function generate2(data, id, lineType, axisNum) {
           		currentY = $(this)[0]['cy']['animVal']['value'];
           	console.log(currentX);
           	console.log(currentY);
+		  	//表明横坐标位置的黑线
+      		svg.append("g")
+		        .attr("class", "tipDot")
+		        .append("line")
+		        .attr("class", "tipDot")
+		        .transition()
+		        .duration(50)
+		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
+		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
+		        .attr("y2", height);
+		    //画线的端点，两个黑色的三角形端点
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
 
-          	//鼠标悬停是，显示圆圈
+
+		//鼠标悬停是，显示圆圈
       		d3.select(this).transition().duration(100).style("opacity", 1);
 
 
@@ -478,25 +498,6 @@ function generate2(data, id, lineType, axisNum) {
 		  		});
 		  		tip.show();
 
-		  	//表明横坐标位置的黑线
-      		svg.append("g")
-		        .attr("class", "tipDot")
-		        .append("line")
-		        .attr("class", "tipDot")
-		        .transition()
-		        .duration(50)
-		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
-		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
-		        .attr("y2", height);
-		    //画线的端点，两个黑色的三角形端点
-      		svg.append("polyline")
-		        .attr("class", "tipDot")
-		        .style("fill", "black")
-		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
-      		svg.append("polyline")
-		        .attr("class", "tipDot")
-		        .style("fill", "black")
-		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
     	})
     	.on("mouseout",  function (d) {
       		var currentX = $(this)[0]['cx']['animVal']['value'];
