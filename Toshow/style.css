@@ -268,7 +268,7 @@ body {
   line-height: 1;
   font-weight: bold;
   padding: 12px;
-  background: rgba(0, 0, 0, 0.8);
+  background: #ff9b00;
   color: #fff;
   border-radius: 2px;
 }
@@ -280,7 +280,7 @@ body {
   font-size: 10px;
   width: 100%;
   line-height: 1;
-  color: rgba(0, 0, 0, 0.8);
+  color: #ff9b00;
   content: "\25BC";
   position: absolute;
   text-align: center;
