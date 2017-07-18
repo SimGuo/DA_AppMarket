@@ -18,7 +18,7 @@ function draw_market_bar(dataset, id){
 		.attr("height", height);
 
 	//画布周边的空白
-	var padding = {left:30, right:30, top:20, bottom:20};
+	var padding = {left:60, right:30, top:20, bottom:20};
 	
 		
 	//x轴的比例尺
@@ -263,9 +263,6 @@ function generate(data, id) {
 
 //----------------------------折线图--------------------------------
 
-var hAxis = 10, mAxis = 10;
-
-//generation function
 function generate2(data, id, lineType, axisNum) {
 
 	//设置周围留白和svg图像大小
@@ -277,12 +274,12 @@ function generate2(data, id, lineType, axisNum) {
 
 	//设置纵坐标划分为时段
 	var legendSize = 10,
-	    legendColor = {'appnum': "#f8cd61", 'Downloads': "#ffad66"};
+	    legendColor = {'Apknum': "#f8cd61", 'Downloads': "#ffad66"};
 
 	//设置图标中的折线代表的含义
-	var category = ['appnum', 'Downloads'];
+	var category = ['Apknum', 'Downloads'];
 
-	//ddate是将原先的数据按数据类型分组，分为appnum和Downloads两组数据，得到以Appnum和Downloads为下标的数组，
+	//ddate是将原先的数据按数据类型分组，分为Apknum和Downloads两组数据，得到以Apknum和Downloads为下标的数组，
 	//数组中每个元素由category和相应的数据数组构成
 	//子数组中每个元素是由category,对应的 x值和对应的 y值构成
 	var ddata = (function() {
@@ -363,11 +360,11 @@ function generate2(data, id, lineType, axisNum) {
 	    .enter().append("g")
 	    .attr("class", "gPath");
 
-	//对于现在的这张图来说, 有两个path，每个path分别对应appnum和dowdload的数据, 设置path的class为对应类别
+	//对于现在的这张图来说, 有两个path，每个path分别对应Apknum和dowdload的数据, 设置path的class为对应类别
 	path.append("path")
 	    .attr("d", function(d) { return area(d['values']); })
 	    .attr("class", function(d) {
-	      if (d['category'] === 'appnum')
+	      if (d['category'] === 'Apknum')
 	        return 'areaU';
 	      else
 	        return 'areaD';
@@ -445,7 +442,7 @@ function generate2(data, id, lineType, axisNum) {
       		// 返回现在悬停的点代表的值的含义
       		var mainCate = (function() {
         		if (jud === 0)
-          			return 'appnum/Downloads';
+          			return 'Apknum/Downloads';
         		else{
           			return d['category'];
         		}
@@ -505,4 +502,4 @@ function generate2(data, id, lineType, axisNum) {
     	});
 }
 
-
+generate2(data, "#zhexian-d3");
