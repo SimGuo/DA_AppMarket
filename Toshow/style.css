@@ -1,30 +1,30 @@
 body {
-	background-color: #f1f1f1;
+    background-color: #f1f1f1;
 }
 
 .people-panel {
-	background-color: #e1891d !important;
-	color: #ffffff;
+    background-color: #e1891d !important;
+    color: #ffffff;
 }
 .people-panel h1 {
-	font-size: 10.5em;
-	font-weight: bold;
-	text-align: center;
-	padding-top: 20px;
+    font-size: 10.5em;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 20px;
 }
 
 .panel-title h5 {
-	padding-left: 10px;
-	margin-bottom: 0px;
+    padding-left: 10px;
+    margin-bottom: 0px;
 }
 
 .panel-body {
-	padding-top: 0px;
+    padding-top: 0px;
 }
 
 .panel-card {
-	box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.25);
-	background-color: white;
+    box-shadow: 1px 0px 1px rgba(0, 0, 0, 0.25);
+    background-color: white;
 }
 
 .container h1 {
@@ -181,7 +181,7 @@ body {
 
 /*STYLESHEETS FOR SENSOR TIMELINE CHART*/
 .timeRect {
-  	opacity: 1;
+    opacity: 1;
 }
 
 .innertimeRect {
@@ -264,6 +264,8 @@ body {
 
 /*END: STYLESHEETS FOR VIS CHARTS*/
 
+
+/*柱状图的tip*/
 .d3-tip {
   line-height: 1;
   font-weight: bold;
@@ -273,7 +275,6 @@ body {
   border-radius: 2px;
 }
 
-/* Creates a small triangle extender for the tooltip */
 .d3-tip:after {
   box-sizing: border-box;
   display: inline;
@@ -286,8 +287,37 @@ body {
   text-align: center;
 }
 
-/* Style northward tooltips differently */
 .d3-tip.n:after {
+  margin: -1px 0 0 0;
+  top: 100%;
+  left: 0;
+}
+
+/*折线图的tip*/
+.d3-tip2 {
+  line-height: 1;
+  font-weight: bold;
+  padding: 12px;
+  background: #ff9b00;
+  color: #fff;
+  border-radius: 2px;
+}
+
+/* Creates a small triangle extender for the tooltip */
+.d3-tip2:after {
+  box-sizing: border-box;
+  display: inline;
+  font-size: 10px;
+  width: 100%;
+  line-height: 1;
+  color: #ff9b00;
+  content: "\25A0";
+  position: absolute;
+  text-align: right;
+}
+
+/* Style northward tooltips differently */
+.d3-tip2.n:after {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;
