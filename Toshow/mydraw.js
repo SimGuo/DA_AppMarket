@@ -516,4 +516,4 @@ function generate2(data, id, lineType, axisNum) {
     	});
 }
 
-generate2(data, "#zhexian-d3");
+
