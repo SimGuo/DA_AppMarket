@@ -274,8 +274,6 @@ var data = [
         {time: '10:09', appnum: 750, Downloads: 200, total: 1000}
       ];
 
-
-
 var hAxis = 10, mAxis = 10;
 
 //generation function
@@ -370,7 +368,6 @@ function generate2(data, id, lineType, axisNum) {
 	    .attr("class", "y axis")
 	    .call(yAxis);
 
-
 	//为ddate中的每个元素添加 path的组，class = gpath, 每个组对应一个元素
 	var path = svg.selectAll(".gPath")
 	    .data(ddata)
@@ -386,7 +383,6 @@ function generate2(data, id, lineType, axisNum) {
 	      else
 	        return 'areaD';
 	    });
-
 
 	// legend表示图例，为每个category创建一个图例
 	var legend = svg.selectAll('.legend')
@@ -419,7 +415,7 @@ function generate2(data, id, lineType, axisNum) {
 
 	var tip = d3.tip()
 		  		.attr('class', 'd3-tip2')
-		  		.offset([0, -70])
+		  		.direction('w');
 	points.call(tip);
 
 	// 将seriesPoints中的values, 提取出成为tipNetPoints，每个tipNetPoint与类中的一个值绑定
@@ -444,28 +440,8 @@ function generate2(data, id, lineType, axisNum) {
           		currentY = $(this)[0]['cy']['animVal']['value'];
           	console.log(currentX);
           	console.log(currentY);
-		  	//表明横坐标位置的黑线
-      		svg.append("g")
-		        .attr("class", "tipDot")
-		        .append("line")
-		        .attr("class", "tipDot")
-		        .transition()
-		        .duration(50)
-		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
-		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
-		        .attr("y2", height);
-		    //画线的端点，两个黑色的三角形端点
-      		svg.append("polyline")
-		        .attr("class", "tipDot")
-		        .style("fill", "black")
-		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
-      		svg.append("polyline")
-		        .attr("class", "tipDot")
-		        .style("fill", "black")
-		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
 
-
-		//鼠标悬停是，显示圆圈
+          	//鼠标悬停是，显示圆圈
       		d3.select(this).transition().duration(100).style("opacity", 1);
 
 
@@ -498,6 +474,25 @@ function generate2(data, id, lineType, axisNum) {
 		  		});
 		  		tip.show();
 
+		  	//表明横坐标位置的黑线
+      		svg.append("g")
+		        .attr("class", "tipDot")
+		        .append("line")
+		        .attr("class", "tipDot")
+		        .transition()
+		        .duration(50)
+		        .attr("x1", $(this)[0]['cx']['animVal']['value'])
+		        .attr("x2", $(this)[0]['cx']['animVal']['value'])
+		        .attr("y2", height);
+		    //画线的端点，两个黑色的三角形端点
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
+      		svg.append("polyline")
+		        .attr("class", "tipDot")
+		        .style("fill", "black")
+		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
     	})
     	.on("mouseout",  function (d) {
       		var currentX = $(this)[0]['cx']['animVal']['value'];
@@ -521,4 +516,4 @@ function generate2(data, id, lineType, axisNum) {
     	});
 }
 
-generate2(data, "#zhexian-d3");	
+generate2(data, "#zhexian-d3");
