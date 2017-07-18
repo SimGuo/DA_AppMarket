@@ -313,7 +313,6 @@ body {
   color: #ff9b00;
   content: "\25A0";
   position: absolute;
-  text-align: right;
 }
 
 /* Style northward tooltips differently */
