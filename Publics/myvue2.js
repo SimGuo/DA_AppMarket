@@ -3,6 +3,7 @@ var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8
 ,"#f9cdac","#f3aca2","#ee8b97","#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
 "#2d0f41","#3d1459","#4d1a70"];
 
+/*
 var market_name = {
 	0: 'Google Play',
 	1: 'Google Play',
@@ -32,7 +33,8 @@ var market_name = {
 	25: '太平洋下载中心',
 	26: '应用酷'
 };
-
+*/
+var market_name = ['GooglePlay中', 'GooglePlay英', '应用宝', '百度手机助手', '360手机助手', '华为应用市场', '小米应用商店', '豌豆荚', '安卓市场', '安智市场', '91应用中心','OPPO软件商店', 'PP助手', '搜狗手机助手', '机锋网', '魅族应用商店', '新浪应用中心', '当乐网', '历趣市场', '应用汇', '移动应用商场', '乐商店', 'ZOL手机软件', 'N多市场', '手机中国', '太平洋下载中心','应用酷']
 //----------------------------柱状图--------------------------------
 
 //bardata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
@@ -141,28 +143,21 @@ function draw_market_bar(dataset, id){
 		.attr("transform","translate(" + padding.left + "," + (height - padding.bottom) + ")")
 		.call(xAxis)
 	.selectAll("text")
-		.data(dataset)
 		.attr('x', 0)
 		.attr('y', 9)
 		.attr('dy', ".35em")
 		.attr("transform", "rotate(30)")
     	.style("text-anchor", "start")
     	.text(function(d){
-    		return market_name[d - 1];
+    		return market_name[d];
     	});
+	
 		
 	//添加y轴
 	svg.append("g")
 		.attr("class","axis")
 		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
-		.call(yAxis);
-
-		/*legend.append('text')
-            .data(data)
-            .attr('x', legendRectSize*1.2)
-            .attr('y', legendRectSize/1.3)
-            .text(function(d) {
-              return market_name[d.inits]; });*/
+		.call(yAxis);		
 }
 //draw_market_bar(bardata,"#test-d3");
 
@@ -172,16 +167,16 @@ var category = ['A', 'B', 'C', 'D', 'E', 'F'];
 var cateColor = ["#fdeb73","#f6c15b","#ed9445","#e66731","#b84a29","#6a3a2d"];
 
 function draw_market_pie(data, id) {
-    var margin = {top: 20, right: 0, bottom: 40, left: 0},
+    var margin = {top: 0, right: 0, bottom: 10, left: 0},
         width = $(id).width() - margin.left - margin.right,
         height = $(id).height() - margin.top - margin.bottom;
 
     var radius = Math.max(width, height) / 2,
-        innerRadius = radius * 0.25,
-        outerRadius = radius * 0.75;
+        innerRadius = radius * 0.2,
+        outerRadius = radius * 0.6;
 
-    var legendRectSize = radius/8,
-        legendSpacing = radius/5;
+    var legendRectSize = radius / 8,
+        legendSpacing = radius / 2;
 
     var color = d3.scale.ordinal()
         .domain(category)
@@ -231,17 +226,22 @@ function draw_market_pie(data, id) {
           }
 
           svg.append("svg:text")
-              .attr("class", "donutCenterText")
-              .attr("dy", "-.3em")
-              .attr("fill","#e58600")
-              .attr("text-anchor", "middle")
-              .transition().duration(200)
-              .text(d['data']['inits']);
+              	.attr("class", "donutCenterText")
+              	.attr("dy", "-.3em")
+              	.attr("fill","#e58600")
+              	.style("font-size","10px")
+              	.attr("text-anchor", "middle")
+              	.transition().duration(200)
+              	.text(function(){
+              		var marketid = d['data']['inits'];
+              		return market_name[marketid];
+              	});
 
           svg.append("svg:text")
               .attr("class", "donutCenterText")
               .attr("dy", ".8em")
               .attr("fill","#e58600")
+              .style("font-size","14px")
               .attr("text-anchor", "middle")
               .transition().duration(200)
               .text(formatPercent(d['value'] / count));
@@ -262,22 +262,35 @@ function draw_market_pie(data, id) {
             })
             .attr('class', 'legend')
             .attr('transform', function(d, i) {
-              var horz = (i-2.8)*(legendSpacing+legendRectSize);
-              var vert =  radius + margin.bottom / 4;
-              return 'translate(' + horz + ',' + vert + ')';
+            	var horz;
+            	var vert;
+            	i = i % 6;
+            	if(i < 2){
+            		horz = (i-0.8) * (legendSpacing + legendRectSize);
+            		vert =  radius - 50;
+            	}
+            	else if(i < 4){
+            		horz = (i-2-0.8) * (legendSpacing + legendRectSize);
+            		vert =  radius - 30;
+            	}
+            	else{
+            		horz = (i-4-0.8) * (legendSpacing + legendRectSize);
+            		vert =  radius - 10;	
+            	}
+            	return 'translate(' + horz + ',' + vert + ')';
             });
 
         legend.append('rect')
-            .attr('width', legendRectSize)
-            .attr('height', legendRectSize)
+            .attr('width', legendRectSize/2)
+            .attr('height', legendRectSize/2)
             .style('fill', color)
             .style('stroke', color);
 
         legend.append('text')
             .data(data)
-            .attr('x', legendRectSize*1.2)
-            .attr('y', legendRectSize/1.3)
-            .attr('transform','rotate(90)')
+            .attr('x', legendRectSize*0.6)
+            .attr('y', legendRectSize/2.6)
+            .style("font-size", "10px")
             .text(function(d) {
               return market_name[d.inits]; });
 
