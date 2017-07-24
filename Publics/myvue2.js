@@ -5,52 +5,50 @@ var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8
 
 var market_name = {
 	0: 'Google Play',
+	1: 'Google Play',
 	2: '应用宝',
-	3: '百度',
-	4: '360',
-	5: '华为',
-	6: '小米',
+	3: '百度手机助手',
+	4: '360手机助手',
+	5: '华为应用市场',
+	6: '小米应用商店',
 	7: '豌豆荚',
 	8: '安卓市场',
 	9: '安智市场',
-	10: '91应用',
+	10: '91应用中心',
 	11: 'OPPO',
 	12: 'PP助手',
-	13: '搜狗',
+	13: '搜狗手机助手',
 	14: '机锋网',
-	15: '魅族',
-	16: '新浪',
+	15: '魅族应用商店',
+	16: '新浪应用中心',
 	17: '当乐网',
 	18: '历趣市场',
 	19: '应用汇',
-	20: '移动应用<br>商场',
+	20: '移动应用商场',
 	21: '乐商店',
-	22: 'ZOL',
+	22: 'ZOL手机软件',
 	23: 'N多市场',
 	24: '手机中国',
-	25: '太平洋',
+	25: '太平洋下载中心',
 	26: '应用酷'
 };
 
 //----------------------------柱状图--------------------------------
 
-//var bardata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28];
+//bardata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
 
 function draw_market_bar(dataset, id){
-	//画布大小
-	var width = 1100;
-	var height = 300;
 
+	//画布周边的空白
+	var padding = {left:60, right:20, top:20, bottom:45},
+        width = $(id).width() - padding.left - padding.right - 30,
+        height = $(id).height() - padding.top - padding.bottom;
 	//在 body 里添加一个 SVG 画布	
 	var svg = d3.select(id)
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
 
-	//画布周边的空白
-	var padding = {left:60, right:30, top:20, bottom:20};
-	
-		
 	//x轴的比例尺
 	var xScale = d3.scale.ordinal()
 		.domain(d3.range(dataset.length))
@@ -139,14 +137,32 @@ function draw_market_bar(dataset, id){
 	//添加x轴
 	svg.append("g")
 		.attr("class","axis")
+		.attr("height",30)
 		.attr("transform","translate(" + padding.left + "," + (height - padding.bottom) + ")")
-		.call(xAxis); 
+		.call(xAxis)
+	.selectAll("text")
+		.data(dataset)
+		.attr('x', 0)
+		.attr('y', 9)
+		.attr('dy', ".35em")
+		.attr("transform", "rotate(30)")
+    	.style("text-anchor", "start")
+    	.text(function(d){
+    		return market_name[d - 1];
+    	});
 		
 	//添加y轴
 	svg.append("g")
 		.attr("class","axis")
 		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
 		.call(yAxis);
+
+		/*legend.append('text')
+            .data(data)
+            .attr('x', legendRectSize*1.2)
+            .attr('y', legendRectSize/1.3)
+            .text(function(d) {
+              return market_name[d.inits]; });*/
 }
 //draw_market_bar(bardata,"#test-d3");
 
@@ -164,7 +180,7 @@ function draw_market_pie(data, id) {
         innerRadius = radius * 0.25,
         outerRadius = radius * 0.75;
 
-    var legendRectSize = radius/6,
+    var legendRectSize = radius/8,
         legendSpacing = radius/5;
 
     var color = d3.scale.ordinal()
@@ -261,6 +277,7 @@ function draw_market_pie(data, id) {
             .data(data)
             .attr('x', legendRectSize*1.2)
             .attr('y', legendRectSize/1.3)
+            .attr('transform','rotate(90)')
             .text(function(d) {
               return market_name[d.inits]; });
 
