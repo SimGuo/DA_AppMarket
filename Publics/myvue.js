@@ -4,7 +4,7 @@ var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8
 "#2d0f41","#3d1459","#4d1a70"];
 
 var market_name = {
-	0: 'Google <br> Play',
+	0: 'Google Play',
 	2: '应用宝',
 	3: '百度',
 	4: '360',
@@ -164,7 +164,7 @@ function draw_market_pie(data, id) {
         innerRadius = radius * 0.25,
         outerRadius = radius * 0.75;
 
-    var legendRectSize = radius/8,
+    var legendRectSize = radius/6,
         legendSpacing = radius/5;
 
     var color = d3.scale.ordinal()
