@@ -3,47 +3,15 @@ var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8
 ,"#f9cdac","#f3aca2","#ee8b97","#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
 "#2d0f41","#3d1459","#4d1a70"];
 
-/*
-var market_name = {
-	0: 'Google Play',
-	1: 'Google Play',
-	2: '应用宝',
-	3: '百度手机助手',
-	4: '360手机助手',
-	5: '华为应用市场',
-	6: '小米应用商店',
-	7: '豌豆荚',
-	8: '安卓市场',
-	9: '安智市场',
-	10: '91应用中心',
-	11: 'OPPO',
-	12: 'PP助手',
-	13: '搜狗手机助手',
-	14: '机锋网',
-	15: '魅族应用商店',
-	16: '新浪应用中心',
-	17: '当乐网',
-	18: '历趣市场',
-	19: '应用汇',
-	20: '移动应用商场',
-	21: '乐商店',
-	22: 'ZOL手机软件',
-	23: 'N多市场',
-	24: '手机中国',
-	25: '太平洋下载中心',
-	26: '应用酷'
-};
-*/
 var market_name = ['GooglePlay中', 'GooglePlay英', '应用宝', '百度手机助手', '360手机助手', '华为应用市场', '小米应用商店', '豌豆荚', '安卓市场', '安智市场', '91应用中心','OPPO软件商店', 'PP助手', '搜狗手机助手', '机锋网', '魅族应用商店', '新浪应用中心', '当乐网', '历趣市场', '应用汇', '移动应用商场', '乐商店', 'ZOL手机软件', 'N多市场', '手机中国', '太平洋下载中心','应用酷']
 //----------------------------柱状图--------------------------------
 
-//bardata = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27];
 
 function draw_market_bar(dataset, id){
 
 	//画布周边的空白
-	var padding = {left:60, right:20, top:20, bottom:45},
-        width = $(id).width() - padding.left - padding.right - 30,
+	var padding = {left:60, right:0, top:20, bottom:45},
+        width = $(id).width() - padding.left - padding.right,
         height = $(id).height() - padding.top - padding.bottom;
 	//在 body 里添加一个 SVG 画布	
 	var svg = d3.select(id)
@@ -543,3 +511,133 @@ function draw_line_chart(data, id, lineType, axisNum) {
       		tip.hide();
     	});
 }
+
+
+ //colors = ["#ffffd9","#edf8b1","#c7e9b4","#7fcdbb","#41b6c4","#1d91c0","#225ea8","#253494","#081d58"], // alternatively colorbrewer.YlGnBu[9]
+
+
+var data = [
+	  { marketid: 0, EDUC: 1092, GAME: 44630, LIFE: 216131, UNKNOWN: 25257 },
+	  { marketid: 1, EDUC: 12, GAME: 18, LIFE: 9, UNKNOWN: 4 },
+	  { marketid: 2, EDUC: 05, GAME: 20, LIFE: 8, UNKNOWN: 2 },
+	  { marketid: 3, EDUC: 01, GAME: 15, LIFE: 5, UNKNOWN: 4 },
+	  { marketid: 4, EDUC: 02, GAME: 10, LIFE: 4, UNKNOWN: 2 },
+	  { marketid: 5, EDUC: 03, GAME: 12, LIFE: 6, UNKNOWN: 3 },
+	  { marketid: 6, EDUC: 04, GAME: 15, LIFE: 8, UNKNOWN: 1 },
+	  { marketid: 7, EDUC: 06, GAME: 11, LIFE: 9, UNKNOWN: 4 },
+	  { marketid: 8, EDUC: 10, GAME: 13, LIFE: 9, UNKNOWN: 5 },
+	  { marketid: 9, EDUC: 16, GAME: 19, LIFE: 6, UNKNOWN: 9 },
+	  { marketid: 10, EDUC: 19, GAME: 17, LIFE: 5, UNKNOWN: 7 },
+	];
+
+function draw_stacked_bar(data, id){
+
+ 	var margin = {top: 0, right: 30, bottom: 20, left: 30};
+
+	var width = $(id).width() - margin.left - margin.right,
+	    height = $(id).height() - margin.top - margin.bottom;
+
+	var svg = d3.select(id)
+	  .append("svg")
+	  .attr("width", width + margin.left + margin.right)
+	  .attr("height", height)
+	  .append("g")
+	  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+	
+	for(var i = 0; i < data.length; i++){
+		var sum = data[i]['EDUC'] + data[i]['GAME'] + data[i]['LIFE'] + data[i]['UNKNOWN'];
+		data[i]['SUM'] = sum;
+	}
+
+	// Transpose the data into layers
+	var dataset = d3.layout.stack()(["EDUC", "GAME", "LIFE", "UNKNOWN"].map(function(fruit) {
+	  return data.map(function(d) {
+	    return {x: d.marketid, y: +(d[fruit]/d['SUM'])};
+	  });
+	}));
+
+	// Set x, y and colors
+	var x = d3.scale.ordinal()
+	  .domain(dataset[0].map(function(d) { return d.x; }))
+	  .rangeRoundBands([10, width-40], 0.05);
+
+	var y = d3.scale.linear()
+	  .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
+	  .range([height - 35, 50]);
+
+	var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
+
+	// Define and draw axes
+	var yAxis = d3.svg.axis()
+	  .scale(y)
+	  .orient("left")
+	  .ticks(5)
+	  .tickFormat( function(d) { return d } );
+
+	var xAxis = d3.svg.axis()
+	  .scale(x)
+	  .orient("bottom");
+
+	svg.append("g")
+	  .attr("class", "y axis")
+	  .call(yAxis);
+
+	console.log("height", height);
+
+	svg.append("g")
+	  	.attr("class", "x axis")
+	  	.attr("transform", "translate(0,"  + (height - 35) +")")
+	  	.call(xAxis)
+	  	.selectAll("text")
+		.attr('x', 0)
+		.attr('y', 9)
+		.attr('dy', ".35em")
+    	.text(function(d){
+    		return market_name[d];
+    	});
+
+	// Create groups for each series, rects for each segment 
+	var groups = svg.selectAll("g.cost")
+	  .data(dataset)
+	  .enter().append("g")
+	  .attr("class", "cost")
+	  .style("fill", function(d, i) { return colors[i]; });
+
+	var rect = groups.selectAll("rect")
+	  .data(function(d) { return d; })
+	  .enter()
+	  .append("rect")
+	  .attr("x", function(d) { return x(d.x); })
+	  .attr("y", function(d) { return y(d.y0 + d.y); })
+	  .attr("height", function(d) { return y(d.y0) - y(d.y0 + d.y) - 1; })
+	  .attr("width", x.rangeBand());
+
+	// Draw legend
+	var legend = svg.selectAll(".legend")
+	  .data(colors)
+	  .enter().append("g")
+	  .attr("class", "legend")
+	  .attr("transform", function(d, i) { return "translate(" + i * (width - 50) / 4 + ",20)"; });
+	 
+	legend.append("rect")
+	  .attr("x", 20)
+	  .attr("width", 18)
+	  .attr("height", 18)
+	  .style("fill", function(d, i) {return colors.slice().reverse()[i];});
+	 
+	legend.append("text")
+	  .attr("x", 40)
+	  .attr("y", 9)
+	  .attr("dy", ".35em")
+	  .style("text-anchor", "start")
+	  .text(function(d, i) { 
+	    switch (i) {
+	      case 0: return "教育";
+	      case 1: return "游戏";
+	      case 2: return "生活";
+	      case 3: return "其他";
+	    }
+	  });
+}
+
