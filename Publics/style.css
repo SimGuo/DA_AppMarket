@@ -1,7 +1,19 @@
 body {
     background-color: #f1f1f1;
 }
-
+.main{
+    position: relative;
+}
+.left{
+    width:400px;
+    position: fixed;
+    left:0px;
+    top:0px;
+}
+.right{
+    width:800px;
+    margin-left: 400px;
+}
 .people-panel {
     background-color: #e1891d !important;
     color: #ffffff;
