@@ -1,7 +1,10 @@
 //----------------------------颜色定义--------------------------------
-var color = ["#4d1a70","#5e1f88","#742796","#973490","#b8428c","#db5087","#e96a8d","#ee8b97","#f3aca2","#f9cdac"
-,"#f9cdac","#f3aca2","#ee8b97","#f9cdac","#f3aca2","#ee8b97","#e96a8d","#db5087","#b8428c","#973490","#742796","#5e1f88","#4d1a70","#3d1459","#2d0f41",
-"#2d0f41","#3d1459","#4d1a70"];
+var color = [
+"#e96a8d","#ee8b97","#f3aca2","#f9cdac","#f9cdac","#f3aca2",
+"#f3aca2","#f9cdac","#f9cdac","#f3aca2","#ee8b97","#e96a8d",
+"#e96a8d","#ee8b97","#f3aca2","#f9cdac","#f9cdac","#f3aca2",
+"#f3aca2","#f9cdac","#f9cdac","#f3aca2","#ee8b97","#e96a8d",
+"#e96a8d","#ee8b97","#f3aca2","#f9cdac","#f9cdac","#f3aca2"];
 
 var market_name = ['GooglePlay中', 'GooglePlay英', '应用宝', '百度手机助手', '360手机助手', '华为应用市场', '小米应用商店', '豌豆荚', '安卓市场', '安智市场', '91应用中心','OPPO软件商店', 'PP助手', '搜狗手机助手', '机锋网', '魅族应用商店', '新浪应用中心', '当乐网', '历趣市场', '应用汇', '移动应用商场', '乐商店', 'ZOL手机软件', 'N多市场', '手机中国', '太平洋下载中心','应用酷']
 //----------------------------柱状图--------------------------------
@@ -10,7 +13,7 @@ var market_name = ['GooglePlay中', 'GooglePlay英', '应用宝', '百度手机�
 function draw_market_bar(dataset, id){
 
 	//画布周边的空白
-	var padding = {left:60, right:0, top:20, bottom:45},
+	var padding = {left:80, right:0, top:50, bottom:50},
         width = $(id).width() - padding.left - padding.right,
         height = $(id).height() - padding.top - padding.bottom;
 	//在 body 里添加一个 SVG 画布	
@@ -40,7 +43,7 @@ function draw_market_bar(dataset, id){
 		.orient("left");
 
 	//矩形之间的空白
-	var rectPadding = 4;
+	var rectPadding = 2;
 
 	var tip = d3.tip()
 		  		.attr('class', 'd3-tip')
@@ -53,10 +56,10 @@ function draw_market_bar(dataset, id){
 		.enter()
 		.append("rect")
 		.attr("class","MyRect")
-		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
 		.attr("fill", function(d,i){
 			return color[i];
 		})
+		.attr("transform","translate(" + padding.left + "," + (padding.bottom + padding.top)/2 + ")")
 		.on("mouseover",function(d,i){
 	        d3.select(this)
 	        	.transition()
@@ -107,15 +110,16 @@ function draw_market_bar(dataset, id){
 	//添加x轴
 	svg.append("g")
 		.attr("class","axis")
-		.attr("height",30)
-		.attr("transform","translate(" + padding.left + "," + (height - padding.bottom) + ")")
+		.attr("height",45)
+		.attr("transform","translate(" + padding.left + "," + (height - (padding.bottom + padding.top)/2) + ")")
 		.call(xAxis)
 	.selectAll("text")
-		.attr('x', 0)
+		.attr('x', -2)
 		.attr('y', 9)
-		.attr('dy', ".35em")
-		.attr("transform", "rotate(30)")
-    	.style("text-anchor", "start")
+		.attr('dy', ".3em")
+		.attr("transform", "rotate(-30)")
+    	.style("text-anchor", "end")
+    	.attr('fill','white')
     	.text(function(d){
     		return market_name[d];
     	});
@@ -123,16 +127,18 @@ function draw_market_bar(dataset, id){
 		
 	//添加y轴
 	svg.append("g")
-		.attr("class","axis")
-		.attr("transform","translate(" + padding.left + "," + padding.top + ")")
-		.call(yAxis);		
+		.attr("class","axisY")
+		.attr('fill','white')
+		.attr("transform","translate(" + padding.left  + "," + (padding.bottom + padding.top)/2 + ")")
+		.call(yAxis);	
+
 }
 //draw_market_bar(bardata,"#test-d3");
 
 //----------------------------饼 图--------------------------------
 
 var category = ['A', 'B', 'C', 'D', 'E', 'F'];
-var cateColor = ["#fdeb73","#f6c15b","#ed9445","#e66731","#b84a29","#6a3a2d"];
+var cateColor = ["#5290e9","#71b37c","#ec932f","#e14d57","#965994","#dda76d"];
 
 function draw_market_pie(data, id) {
     var margin = {top: 0, right: 0, bottom: 10, left: 0},
@@ -140,7 +146,7 @@ function draw_market_pie(data, id) {
         height = $(id).height() - margin.top - margin.bottom;
 
     var radius = Math.max(width, height) / 2,
-        innerRadius = radius * 0.2,
+        innerRadius = radius * 0.3,
         outerRadius = radius * 0.6;
 
     var legendRectSize = radius / 8,
@@ -177,7 +183,7 @@ function draw_market_pie(data, id) {
           return color(d.data.inits);
         })
         .attr("class", "solidArc")
-        .attr("stroke", "none")
+        .attr("stroke", "#764e4b")
         .attr("d", arc)
         .each(function(d) {
           this._current=d;
@@ -220,6 +226,8 @@ function draw_market_pie(data, id) {
         	d3.selectAll('.donutCenterText').remove();
         });
 
+        
+
         //legend rendering
         var legend = svg.selectAll('.legend')
             .data(color.domain())
@@ -258,9 +266,14 @@ function draw_market_pie(data, id) {
             .data(data)
             .attr('x', legendRectSize*0.6)
             .attr('y', legendRectSize/2.6)
+            .attr('fill', 'white')
             .style("font-size", "10px")
             .text(function(d) {
-              return market_name[d.inits]; });
+            	return market_name[d.inits]; 
+            });
+        
+     
+
 
         this.getPath = function() {
           return path;
@@ -275,7 +288,7 @@ function draw_market_pie(data, id) {
 function draw_line_chart(data, id, lineType, axisNum) {
 	
 	//设置周围留白和svg图像大小
-	var margin = {top: 20, right: 18, bottom: 35, left: 30},
+	var margin = {top: 20, right: 18, bottom: 35, left: 50},
 	    width = $(id).width() - margin.left - margin.right,
 	    height = $(id).height() - margin.top - margin.bottom;
 
@@ -347,23 +360,32 @@ function draw_line_chart(data, id, lineType, axisNum) {
 	    .tickFormat(d3.time.format("%m/%d"))
 	    .tickPadding([6])
 	    .orient("bottom");
+	
 	//y轴坐标轴
 	var yAxis = d3.svg.axis()
 	    .scale(y)
 	    .ticks(10)
 	    .tickSize(-width)
 	    .orient("left");
+
 	//画上x轴
 	svg.append("g")
-	    .attr("class", "x axis")
+	    .attr("class", "axisY")
 	    .attr("id", "net-x-axis")
 	    .attr("transform", "translate(0," + height + ")")
-	    .call(xAxis);
-	//画上y轴
-	svg.append("g")
-	    .attr("class", "y axis")
-	    .call(yAxis);
+	    .call(xAxis)
+	    .selectAll('text')
+	    .attr('fill','white');
 
+	//画上y轴
+	y_axis = svg.append("g")
+	    .attr("class", "axisY2")
+	    .call(yAxis);
+	y_axis.selectAll('text')
+		.attr('fill', 'white')
+		.attr('x',-4)
+		.style('font-size','12px');
+	
 	//为ddate中的每个元素添加 path的组，class = gpath, 每个组对应一个元素
 	var path = svg.selectAll(".gPath")
 	    .data(ddata)
@@ -397,6 +419,7 @@ function draw_line_chart(data, id, lineType, axisNum) {
 	//图例的说明文字
 	legend.append('text')
 	    .data(category)
+	    .attr('fill','white')
 	    .attr('x', legendSize*1.2)
 	    .attr('y', legendSize/1.1)
 	    .text(function(d) {
@@ -410,8 +433,8 @@ function draw_line_chart(data, id, lineType, axisNum) {
 	    .attr("class", "seriesPoints");
 
 	var tip = d3.tip()
-		  		.attr('class', 'd3-tip2')
-		  		.direction('w');
+	  		.attr('class', 'd3-tip2')
+	  		.direction('w');
 	points.call(tip);
 
 	// 将seriesPoints中的values, 提取出成为tipNetPoints，每个tipNetPoint与类中的一个值绑定
@@ -483,11 +506,11 @@ function draw_line_chart(data, id, lineType, axisNum) {
 		    //画线的端点，两个黑色的三角形端点
       		svg.append("polyline")
 		        .attr("class", "tipDot")
-		        .style("fill", "black")
+		        .style("fill", "white")
 		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(0-2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(0+6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(0-2.5));
       		svg.append("polyline")
 		        .attr("class", "tipDot")
-		        .style("fill", "black")
+		        .style("fill", "white")
 		        .attr("points", ($(this)[0]['cx']['animVal']['value']-3.5)+","+(y(0)+2.5)+","+$(this)[0]['cx']['animVal']['value']+","+(y(0)-6)+","+($(this)[0]['cx']['animVal']['value']+3.5)+","+(y(0)+2.5));
     	})
     	.on("mouseout",  function (d) {
@@ -579,23 +602,25 @@ function draw_stacked_bar(data, id){
 	  .scale(x)
 	  .orient("bottom");
 
-	svg.append("g")
-	  .attr("class", "y axis")
-	  .call(yAxis);
+	/*svg.append("g")
+	  .attr("class", "axisY")
+	  .call(yAxis);*/
 
 	console.log("height", height);
 
 	svg.append("g")
-	  	.attr("class", "x axis")
+	  	.attr("class", "axisY")
 	  	.attr("transform", "translate(0,"  + (height - 35) +")")
 	  	.call(xAxis)
 	  	.selectAll("text")
-		.attr('x', 0)
+		.attr('x', 16)
 		.attr('y', 9)
-		.attr('dy', ".35em")
     	.text(function(d){
     		return market_name[d];
-    	});
+    	})
+		.attr('dy', ".3em")
+		.attr("transform", "rotate(-10)")
+    	.style("text-anchor", "end");
 
 	// Create groups for each series, rects for each segment 
 	var groups = svg.selectAll("g.cost")
@@ -631,6 +656,7 @@ function draw_stacked_bar(data, id){
 	  .attr("y", 9)
 	  .attr("dy", ".35em")
 	  .style("text-anchor", "start")
+	  .attr('fill','white')
 	  .text(function(d, i) { 
 	    switch (i) {
 	      case 0: return "教育";
@@ -639,5 +665,7 @@ function draw_stacked_bar(data, id){
 	      case 3: return "其他";
 	    }
 	  });
+
+	
 }
 
