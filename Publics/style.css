@@ -14,6 +14,15 @@ body {
     width:800px;
     margin-left: 400px;
 }
+.simguo-container {
+    position: fixed;
+    height: 100%;
+}
+.simguo-verticalmiddle{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
 .people-panel {
     background-color: #e1891d !important;
     color: #ffffff;
