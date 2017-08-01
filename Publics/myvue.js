@@ -189,17 +189,17 @@ function draw_market_pie(data, id) {
           this._current=d;
         })
         .on('mouseover', function(d) {
-          console.log(d);
+          	//console.log(d);
 
-          d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius / 0.75 * 0.9));
+          	d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius / 0.75 * 0.9));
 
-          //count the sum
-          var count = 0;
-          for (var i = 0; i < category.length; i++) {
-            count += data[i]['value'];
-          }
+          	//count the sum
+          	var count = 0;
+          	for (var i = 0; i < category.length; i++) {
+            	count += data[i]['value'];
+          	}
 
-          svg.append("svg:text")
+          	svg.append("svg:text")
               	.attr("class", "donutCenterText")
               	.attr("dy", "-.3em")
               	.attr("fill","#e58600")
@@ -211,15 +211,14 @@ function draw_market_pie(data, id) {
               		return market_name[marketid];
               	});
 
-          svg.append("svg:text")
-              .attr("class", "donutCenterText")
-              .attr("dy", ".8em")
-              .attr("fill","#e58600")
-              .style("font-size","14px")
-              .attr("text-anchor", "middle")
-              .transition().duration(200)
-              .text(formatPercent(d['value'] / count));
-
+          	svg.append("svg:text")
+              	.attr("class", "donutCenterText")
+              	.attr("dy", ".8em")
+              	.attr("fill","#e58600")
+              	.style("font-size","14px")
+              	.attr("text-anchor", "middle")
+              	.transition().duration(200)
+              	.text(formatPercent(d['value'] / count));
         })
         .on('mouseout', function(d) {
         	d3.select(this).transition().duration(200).attr("d", arc.innerRadius(innerRadius).outerRadius(outerRadius));
@@ -457,8 +456,8 @@ function draw_line_chart(data, id, lineType, axisNum) {
 	    	//animVal属性是定位工具，返回当前的像素位置
       		var currentX = $(this)[0]['cx']['animVal']['value'],
           		currentY = $(this)[0]['cy']['animVal']['value'];
-          	console.log(currentX);
-          	console.log(currentY);
+          	//console.log(currentX);
+          	//console.log(currentY);
 
           	//鼠标悬停是，显示圆圈
       		d3.select(this).transition().duration(100).style("opacity", 1);
@@ -481,7 +480,7 @@ function draw_line_chart(data, id, lineType, axisNum) {
         		}
       		})();
       		// 两个值中的另外一个值
-      		console.log(d);
+      		//console.log(d);
       		var viceCate = (function() {
         		if (category[0] === d['category'])
           			return category[1];
@@ -589,7 +588,7 @@ function draw_stacked_bar(data, id){
 	  .domain([0, d3.max(dataset, function(d) {  return d3.max(d, function(d) { return d.y0 + d.y; });  })])
 	  .range([height - 35, 50]);
 
-	var colors = ["b33040", "#d25c4d", "#f2b447", "#d9d574"];
+	var colors = ["#b33040", "#d25c4d", "#f2b447", "#d9d574"];
 
 	// Define and draw axes
 	var yAxis = d3.svg.axis()
